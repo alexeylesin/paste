@@ -30,7 +30,7 @@ const initCodeEditor = () => {
 
     statsEl = byId('stats');
     editor.on('change', () => {
-        statsEl.innerHTML = `Length: ${editor.getValue().length} |  Lines: ${editor['doc'].size}`;
+        statsEl.innerHTML = `Символов: ${editor.getValue().length} |  Строк: ${editor['doc'].size}`;
         hideCopyBar();
     });
 };
@@ -48,7 +48,7 @@ const initLangSelector = () => {
             const language = e.data || { mime: null, mode: null };
             editor.setOption('mode', language.mime);
             CodeMirror.autoLoadMode(editor, language.mode);
-            document.title = e.text && e.text !== 'Plain Text' ? `NoPaste - ${e.text} code snippet` : 'NoPaste';
+            document.title = e.text && e.text !== 'Plain Text' ? `LesinPaste - сниппет ${e.text}` : 'LesinPaste';
         },
     });
 
@@ -105,11 +105,11 @@ const generateLink = (mode) => {
     const data = editor.getValue();
     compress(data, (base64, err) => {
         if (err) {
-            alert('Failed to compress data: ' + err);
+            alert('Невозможно сжать данные: ' + err);
             return;
         }
         const url = buildUrl(base64, mode);
-        statsEl.innerHTML = `Data length: ${data.length} |  Link length: ${url.length} | Compression ratio: ${Math.round(
+        statsEl.innerHTML = `Количество символов: ${data.length} | Длина ссылки: ${url.length} | Степень сжатия: ${Math.round(
             (100 * url.length) / data.length
         )}%`;
 
@@ -134,10 +134,10 @@ const hideCopyBar = (success) => {
         copyBar.classList.add('hidden');
         return;
     }
-    copyButton.innerText = 'Copied !';
+    copyButton.innerText = 'Скопировано!';
     setTimeout(() => {
         copyBar.classList.add('hidden');
-        copyButton.innerText = 'Copy';
+        copyButton.innerText = 'Копировать';
     }, 800);
 };
 
@@ -163,7 +163,7 @@ const buildUrl = (rawData, mode) => {
     const query = shorten('Plain Text') === select.selected() ? '' : `?l=${encodeURIComponent(select.selected())}`;
     const url = base + query + '#' + rawData;
     if (mode === 'markdown') {
-        return `[NoPaste snippet](${url})`;
+        return `[Сниппет с LesinPaste](${url})`;
     }
     if (mode === 'iframe') {
         const height = editor['doc'].height + 45;
